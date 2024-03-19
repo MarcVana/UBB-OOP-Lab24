@@ -1,0 +1,3 @@
+/Users/marcvana/UBB/OOP/LAB2-4/cmake-build-debug/CMakeFiles/LAB2_4.dir
+/Users/marcvana/UBB/OOP/LAB2-4/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/marcvana/UBB/OOP/LAB2-4/cmake-build-debug/CMakeFiles/rebuild_cache.dir

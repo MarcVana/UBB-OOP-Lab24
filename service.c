@@ -35,38 +35,62 @@ int eraseCar(CarList* car_list, int car_index) {
     return 1;
 }
 
-CarList* filterCars(CarList* car_list, CarList* result_list, char* model, char* category) {
-    // filtrare dupa model
-    if (model != NULL)
-        for (int i = 0; i < car_list -> length; i++)
-            if (strcmp(car_list -> car[i].model, model) == 0)
-                addCar(result_list, car_list -> car[i]);
-
-    // filtrare dupa categorie
-    if (category != NULL)
-        for (int i = 0; i < car_list -> length; i++)
-            if (strcmp(car_list -> car[i].category, category) == 0)
-                addCar(result_list, car_list -> car[i]);
-
+CarList* filterCars_model(CarList* car_list, CarList* result_list, char* model) {
+    for (int i = 0; i < car_list -> length; i++) {
+        if (strcmp(car_list -> car[i].model, model) == 0) {
+            addCar(result_list, car_list -> car[i]);
+        }
+    }
     return result_list;
 }
 
-void sortCars(CarList* car_list, int direction, char* criteria) {
+CarList* filterCars_category(CarList* car_list, CarList* result_list, char* category) {
+    for (int i = 0; i < car_list -> length; i++) {
+        if (strcmp(car_list -> car[i].category, category) == 0) {
+            addCar(result_list, car_list -> car[i]);
+        }
+    }
+    return result_list;
+}
+
+CarList* filterCars(CarList* car_list, CarList* result_list, char* model, char* category) {
+    if (model != NULL) {
+        result_list = filterCars_model(car_list, result_list, model);
+    }
+    if (category != NULL) {
+        result_list = filterCars_category(car_list, result_list, category);
+    }
+    return result_list;
+}
+
+void sortCars_model(CarList* car_list, int direction) {
     for (int i = 0; i < car_list -> length - 1; i++) {
         for (int j = i + 1; j < car_list -> length; j++) {
-            if (direction * strcmp(criteria, "model") == 0) {
-                if (direction * strcmp(car_list -> car[i].model, car_list -> car[j].model) > 0) {
-                    Car aux = car_list -> car[i];
-                    car_list -> car[i] = car_list -> car[j];
-                    car_list -> car[j] = aux;
-                }
-            } else if (direction * strcmp(criteria, "category") == 0) {
-                if (direction * strcmp(car_list->car[i].category, car_list->car[j].category) > 0) {
-                    Car aux = car_list -> car[i];
-                    car_list -> car[i] = car_list -> car[j];
-                    car_list -> car[j] = aux;
-                }
+            if (direction * strcmp(car_list -> car[i].model, car_list -> car[j].model) > 0) {
+                Car aux = car_list -> car[i];
+                car_list -> car[i] = car_list -> car[j];
+                car_list -> car[j] = aux;
             }
         }
+    }
+}
+
+void sortCars_category(CarList* car_list, int direction) {
+    for (int i = 0; i < car_list -> length - 1; i++) {
+        for (int j = i + 1; j < car_list -> length; j++) {
+            if (direction * strcmp(car_list -> car[i].category, car_list -> car[j].category) > 0) {
+                Car aux = car_list -> car[i];
+                car_list -> car[i] = car_list -> car[j];
+                car_list -> car[j] = aux;
+            }
+        }
+    }
+}
+
+void sortCars(CarList* car_list, int direction, char* criteria) {
+    if (strcmp(criteria, "model") == 0) {
+        sortCars_model(car_list, direction);
+    } else if (strcmp(criteria, "category") == 0) {
+        sortCars_category(car_list, direction);
     }
 }

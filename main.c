@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "service.h"
 #include "tests.h"
 
@@ -24,26 +25,18 @@ void read_string(char* string) {
 
 // Utilizatorul introducele datele unei masini.
 void getData(char* reg_number, char* model, char* category) {
-    char* read_reg_number = NULL;
-    char* read_model = NULL;
-    char* read_category = NULL;
-
     printf(">>> Introduceti nr. inreg.: ");
-    //scanf(" %s", read_reg_number);
-    //read_string(read_reg_number);
     getchar();
-    fgets(read_reg_number, sizeof(read_reg_number), stdin);
-    read_reg_number[strcspn(read_reg_number, "\n")] = '\0';
+    fgets(reg_number, 50, stdin);
+    reg_number[strcspn(reg_number, "\n")] = '\0';
 
     printf(">>> Introduceti modelul: ");
-    read_string(read_model);
+    fgets(model, 50, stdin);
+    model[strcspn(model, "\n")] = '\0';
 
     printf(">>> Introduceti categoria: ");
-    read_string(read_category);
-
-    strcpy(reg_number, read_reg_number);
-    strcpy(model, read_model);
-    strcpy(category, read_category);
+    fgets(category, 50, stdin);
+    category[strcspn(category, "\n")] = '\0';
 }
 
 void printList(CarList* car_list) {
@@ -57,9 +50,9 @@ void printList(CarList* car_list) {
 }
 
 void menu_Add(CarList* car_list) {
-    char* add_reg_number;
-    char* add_model;
-    char* add_category;
+    char *add_reg_number = malloc(50 * sizeof(char));
+    char *add_model = malloc(50 * sizeof(char));
+    char *add_category = malloc(50 * sizeof(char));
 
     getData(add_reg_number, add_model, add_category);
     int ok = newCar(car_list, add_reg_number, add_model, add_category);
@@ -79,9 +72,9 @@ void menu_Modify(CarList* car_list) {
     else {
         printf("Masina %d a fost selectata cu succes.\n", car_index + 1);
 
-        char* new_reg_number;
-        char* new_model;
-        char* new_category;
+        char *new_reg_number = malloc(50 * sizeof(char));
+        char *new_model = malloc(50 * sizeof(char));
+        char *new_category = malloc(50 * sizeof(char));
 
         getData(new_reg_number, new_model, new_category);
 
@@ -106,29 +99,29 @@ void menu_Delete(CarList* car_list) {
 }
 
 void menu_Filter(CarList* car_list) {
-    printf("1. Model\n2. Categorie\n");
-
-    char option = menu_ChooseOption();
-
-    char* reg_number = NULL;
-    char* model = NULL;
-    char* category = NULL;
-    int is_okay = 1;
-
     if (car_list -> length == 0) {
         printf("Nu exista masini.");
-        is_okay = 0;
+        return;
     }
-    else if (option == '1') {
-        printf("Introduceti modelul: ");
+
+    printf("1. Model\n2. Categorie\n");
+
+    char option_filter = menu_ChooseOption();
+
+    char* model = malloc(50 * sizeof(char));
+    char* category = malloc(50 * sizeof(char));
+    int is_okay = 1;
+
+    if (option_filter == '1') {
+        printf(">>> Introduceti modelul: ");
         getchar();
-        fgets(model, sizeof(model), stdin);
+        fgets(model, 50, stdin);
         model[strcspn(model, "\n")] = '\0';
     }
-    else if (option == '2') {
-        printf("Introduceti categoria: ");
+    else if (option_filter == '2') {
+        printf(">>> Introduceti categoria: ");
         getchar();
-        fgets(category, sizeof(category), stdin);
+        fgets(category, 50, stdin);
         category[strcspn(category, "\n")] = '\0';
     }
     else {
@@ -140,7 +133,6 @@ void menu_Filter(CarList* car_list) {
         printf("Lista filtrata: \n");
         CarList result_list = createNew();
         filterCars(car_list, &result_list, model, category);
-
         if (result_list.length != 0) printList(&result_list);
         else printf("Nu exista masini cu datele cerute.");
 
@@ -157,31 +149,29 @@ void menu_Sort(CarList* car_list) {
 
     int direction;
     int is_okay = 1;
-
     if (car_list -> length == 0) {
         printf("Nu exista masini.");
         is_okay = 0;
     }
-    else if (option_2 == '1') direction = -1;
-    else if (option_2 == '2') direction = 1;
+    else if (option_2 == '1') direction = 1;
+    else if (option_2 == '2') direction = -1;
 
     CarList result_list = createNew();
 
     if (option == '1' && is_okay) {
         printf("Lista ordonata dupa model este: \n");
-        sortCars(&result_list, direction, "model");
+        sortCars(car_list, direction, "model");
+        printList(car_list);
     }
     else if (option == '2' && is_okay) {
         printf("Lista ordonata dupa categorie este: \n");
-        sortCars(&result_list, direction, "category");
+        sortCars(car_list, direction, "category");
+        printList(car_list);
     }
     else {
         printf("Optiune invalida!");
         is_okay = 0;
     }
-
-    if (is_okay) printList(&result_list);
-    //deleteList(&result_list);
 }
 
 void addPredefinedCars(CarList* car_list) {
@@ -211,7 +201,7 @@ void startApp() {
 }
 
 int main() {
-    startApp();
     //runTests();
+    startApp();
     return 0;
 }

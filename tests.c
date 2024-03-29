@@ -86,6 +86,7 @@ void test_filterCars() {
     filterCars(&car_list, &result_list, "Mercedes", NULL);
     assert(result_list.length == 1);
     assert(strcmp(result_list.car[0].model, "Mercedes") == 0);
+    result_list = createNew();
     filterCars(&car_list, &result_list, NULL, "Sedan");
     assert(strcmp(result_list.car[0].model, "BMW") == 0);
     deleteList(&car_list);
